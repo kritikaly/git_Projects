@@ -1,0 +1,48 @@
+<form #signUpForm="ngForm" (ngSubmit)="signUpForm.valid && onSubmit(signUpForm)">
+  <input type="text" #fullName="ngModel" [(ngModel)]="userService.selectedUser.fullName" name="fullName" placeholder="Full Name"
+  required [ngClass]="{'invalid-textbox': signUpForm.submitted && !fullName.valid }" >
+  <div *ngIf="signUpForm.submitted && !fullName.valid">
+    <label class="validation-message">This field is required.</label>
+  </div>
+
+  <!--
+    ng class explanation: If the form (signUpForm) is submitted and the input for fullName is invalid,
+     apply the class invalid-textbox. 
+    ngIf explanation: since there is only one requirement, we just need to check if the form is valid (via the 
+    requirement), if it isn't, display the label, if it is, no error is called
+  -->
+
+  <input type="text" #email="ngModel" [(ngModel)]="userService.selectedUser.email" name="email" placeholder="Email"
+  required [pattern]="emailRegex" [ngClass]="{'invalid-textbox': signUpForm.submitted && !email.valid }" autocomplete="off">
+  <div *ngIf="signUpForm.submitted && email.errors">
+      <label *ngIf="email.errors.required" class="validation-message">This field is required.</label>
+      <label *ngIf="email.errors.pattern" class="validation-message">Invalid email address.</label>
+  </div>
+
+  <!-- 
+    to see ngClass explanation scroll up.
+    ngIF explanation: this time there are more errors to check for, so instead of referencing if it's valid we just
+    use the method errors. if the required portion isnt met then show the label with test saying the field is required
+    if the pattern isn't followed, then show the label with text saying the email is invalid.
+  -->
+
+  <input type="password" #password="ngModel" [(ngModel)]="userService.selectedUser.password" name="password" placeholder="Password"
+   required minlength="4" [ngClass]="{'invalid-textbox': signUpForm.submitted && !password.valid }" autocomplete="off">
+   <div *ngIf="signUpForm.submitted && password.errors">
+       <label *ngIf="password.errors.required" class="validation-message">This field is required.</label>
+       <label *ngIf="password.errors.minlength" class="validation-message">Password must be at least 4 characters long.</label>
+   </div>
+   
+  <input type="submit" value="Sign up">
+</form>
+
+<!-- success message -->
+<div class="success" *ngIf="showSuccessMessage">
+  Saved successfully
+</div>
+
+<!-- error messages -->
+<div class="alert" *ngIf="serverErrorMessages">
+  {{serverErrorMessages}}
+  <!-- {{serverErrorMessage}} -->
+</div>
