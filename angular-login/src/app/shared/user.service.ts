@@ -34,7 +34,11 @@ export class UserService {
 
   getUserProfile() {
     return this.http.get(`${environment.apiBaseUrl}/userProfile`);
+  }
 
+  makeAdmin(id) {
+    console.log(id);
+    return this.http.patch(environment.apiBaseUserUrl, id, this.noAuthHeader);
   }
 
   setToken(token: string) {
@@ -53,9 +57,18 @@ export class UserService {
     const token = this.getToken();
     if (token) {
       const userPayLoad = atob(token.split('.')[1]);
+      // console.log(userPayLoad);
       return JSON.parse(userPayLoad);
     } else {
       return null;
+    }
+  }
+
+  isAdminLoggedIn() {
+    const userPayLoad = this.getUserPayLoad();
+    if (userPayLoad && userPayLoad.admin) {
+      console.log('this admin is legit!');
+      return userPayLoad.exp > Date.now() / 1000;
     }
   }
 

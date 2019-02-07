@@ -1,0 +1,27 @@
+<table *ngIf="userDetails" class="table-fill">
+  <thead>
+    <tr>
+      <th colspan="6" class="text-center">Welcome Admin!</th>
+    </tr>
+  </thead>
+  <tbody >
+    <tr *ngFor="let item of userDetails; let i=index">
+      <td>Name</td>
+      <td> {{item.fullName}}</td>
+      <td>Email</td>
+      <td>{{item.email}}</td>
+      <td>Is Admin</td>
+      <td>{{item.admin}}</td>
+      <div *ngIf="!item.admin">
+        <td>
+          <input type="button" value="Make User Admin" (click)="makeUserAdmin(item)">
+        </td>
+      </div>
+    </tr>
+    <tr>
+      <td colspan="6" class="text-center">
+        <input type="button" value="Logout" (click)="onLogout()">
+      </td>
+    </tr>
+  </tbody>
+</table>

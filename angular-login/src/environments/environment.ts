@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   apiBaseUrl: 'http://localhost:1334',
+  apiBaseAdminUrl: 'http://localhost:1334/adminProfile',
   apiBaseUserUrl: 'http://localhost:1334/user', // to the mongoDB server dealing with users.
   apiBaseDocumentUrl: 'http://localhost:1334/documents' // to the mongoDB server dealing with documents
 };

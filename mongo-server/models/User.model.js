@@ -17,8 +17,13 @@ const UserSchema = new mongoose.Schema({
         required: true,
         minlength: [4, "Password must be atleast 4 characters long"]
     },
-    saltSecret: String
-    // use some cookies on the server side
+    saltSecret: String,
+    // use some cookies on the server side 
+    admin: {
+        type: Boolean,
+        required: true,
+        default: false
+    }
 });
 
 // Custom validation for email
@@ -43,13 +48,12 @@ UserSchema.pre('save', function(next) {
 UserSchema.methods.verifyPassword = function (password) {
     return bcrypt.compareSync(password, this.password);
 }
-// arrow functions = buggy
-// a function generating a jwt token and giving the mongodb generated id (_id)
-UserSchema.methods.generateJwt = function () {
-    return jwt.sign({ _id: this._id },
-        "SECRET#123", 
+
+UserSchema.methods.generateJwt = function() {
+    return jwt.sign({ _id: this._id, admin: this.admin },
+        "SECRET#123",
         {
-            expiresIn: "2m"
+            expiresIn: "5m"
         });
 }
 

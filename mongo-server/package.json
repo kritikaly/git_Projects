@@ -20,6 +20,7 @@
     "multer-gridfs-storage": "^3.0.1",
     "npm": "^6.4.1",
     "passport": "^0.4.0",
+    "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0"
   },
   "devDependencies": {

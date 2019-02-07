@@ -17,15 +17,24 @@ export class SignInComponent implements OnInit {
 
   ngOnInit() {
     if (this.userService.isLoggedIn) {
-      this.router.navigateByUrl('/userprofile');
+      if (this.userService.getUserPayLoad().admin) {
+        this.router.navigateByUrl('/adminprofile');
+      } else {
+        this.router.navigateByUrl('/userprofile');
+      }
     }
   }
   onSubmit(form: NgForm) {
     this.userService.login(form.value).subscribe(
       res => {
-        console.log(res);
         this.userService.setToken(res['token']);
-        this.router.navigateByUrl('/userprofile');
+        console.log(this.userService.getUserPayLoad());
+        if (this.userService.getUserPayLoad().admin) {
+          console.log('this is an admin trying to login!');
+          this.router.navigateByUrl('/adminprofile');
+        } else {
+          this.router.navigateByUrl('/userprofile');
+        }
       },
       err => {
         console.log(err);

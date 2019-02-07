@@ -40,6 +40,32 @@ module.exports.userGet = (req, res, next) => {
     });
 };
 
+module.exports.createAdmin = (req, res, next) => {
+    console.log(req);
+    User.findById(req.body._id, function (err, user) {
+        if (err) {
+            console.log(err);
+        } else if (!user) {
+            console.log('there is no user found!');
+        } else {
+            if (user.admin) {
+                res.status(422).send('this user is already an admin!');
+            } else {
+                user.admin = true;
+                user.save((err, results) => {
+                    if(!err) {
+                        res.status(200).json({User: results});
+                        console.log(`${results.fullName} is now an admin!`);
+                    }
+                    else {
+                        console.log(err);
+                    }
+                });
+            } 
+        }
+    });
+}
+
 // Utilizing local strategy (middleware) and passport, we are able to 
 // If this returns true, we generate a jwt token (see user.model.js for the function).
 // passports authenticate method with the first value as 'local' see config/passportConfig.js.
@@ -50,8 +76,9 @@ module.exports.authenticate = (req, res, next) => {
         if (err) {
             return res.status(400).json(err);
         } else if (user) {
-            console.log('A token is being generated!');
-            return res.status(200).json({ "token": user.generateJwt() });
+                console.log('A token is being generated!');
+                // console.log(req);
+                return res.status(200).json({ "token": user.generateJwt() });
         } else {
             return res.status(404).json(info);
         }
@@ -66,9 +93,33 @@ module.exports.userProfile = (req, res, next) => {
         (err, user) => {
             if (!user) {
                 return res.status(404).json({ status: false, message: 'User record was not found.' });
+            } else if (user.admin) {
+                User.find().exec((err, users,) => {
+                    if(err) {
+                        res.send("you have an error", err);
+                        console.log(err); 
+                    }
+                    else {
+                        res.json(users);
+                        //return res.status(200).json({ status: true, userProfiles: lo.get(users, ['fullName', 'email']) });
+                    }
+                });
             } else {
                 return res.status(200).json({ status: true, user: lo.pick(user, ['fullName', 'email']) });
             }
         }    
     )
+}
+
+module.exports.adminProfile = (req, res, next) => {
+    User.find().exec((err, users,) => {
+        if(err) {
+            res.send("you have an error", err);
+            console.log(err); 
+        }
+        else {
+            res.json(users);
+            //return res.status(200).json({ status: true, userProfiles: lo.get(users, ['fullName', 'email']) });
+        }
+    });
 }

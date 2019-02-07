@@ -14,10 +14,13 @@ export class AuthInterceptor implements HttpInterceptor {
 
     intercept(req: HttpRequest<any>, next: HttpHandler) {
         if (req.headers.get('noauth')) {
+            console.log(req);
             return next.handle(req.clone());
         } else {
             const clonedreq = req.clone({
-                headers: req.headers.set('Authorization', `token ${this.userService.getToken()}`)
+                setHeaders: {
+                    'Authorization': `token ${this.userService.getToken()}`,
+                }
             });
             return next.handle(clonedreq).pipe(
                 tap(
